@@ -1,44 +1,27 @@
-// server/index.js
-
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
 const axios = require('axios');
 
-// Load environment variables from .env file
-dotenv.config();
+// This is the main handler Vercel will run for ANY request to your URL.
+module.exports = async (req, res) => {
+  // Allow requests from any origin (CORS headers) for your Flutter app
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Middleware
-app.use(cors()); // Allows our Flutter app to call this server
-app.use(express.json());
-
-// The Weather Endpoint
-app.get('/weather', async (req, res) => {
+  // Handle pre-flight 'OPTIONS' requests from browsers
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
-    const city = req.query.city;
-    if (!city) {
-      return res.status(400).json({ message: 'City parameter is required' });
-    }
-
-    const apiKey = process.env.OPENWEATHER_API_KEY;
-    const weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+    // Get the 'city' from await axios.get(weatherURL);
     
-    const response = await axios.get(weatherURL);
-    
-    // Send the weather data back to the Flutter app
-    res.status(200).json(response.data);
+    // Send the successful data back
+    res.status(200).json(weatherResponse.data);
 
   } catch (error) {
-    console.error("Error fetching weather:", error.response ? error.response.data : error.message);
+    // If anything goes wrong, send back a detailed error
     const statusCode = error.response ? error.response.status : 500;
     const message = error.response ? error.response.data.message : 'Internal Server Error';
-    res.status(statusCode).json({ message });
+    res.status(statusCode).json({ message: message });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`✅ Weather server is running on port ${PORT}`);
-});
+};

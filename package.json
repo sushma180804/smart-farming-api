@@ -1,4 +1,9 @@
 {
-  "name": "smart-farming-api-final",
-  "version": "1.0.0 for us automatically. This is a cleaner and more standard way to do it."
+  "name": "smart-farming-api-vercel",
+  "version": "1.0.0",
+  "description": "A serverless function for the Smart Farming App",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.6.8"
+  }
 }
